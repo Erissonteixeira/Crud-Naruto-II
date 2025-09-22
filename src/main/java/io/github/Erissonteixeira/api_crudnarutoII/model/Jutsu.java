@@ -1,8 +1,10 @@
 package io.github.Erissonteixeira.api_crudnarutoII.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 public class Jutsu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
