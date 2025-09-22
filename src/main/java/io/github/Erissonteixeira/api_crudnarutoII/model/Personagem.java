@@ -1,7 +1,6 @@
 package io.github.Erissonteixeira.api_crudnarutoII.model;
 
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.Data;
 
 import java.util.HashMap;
