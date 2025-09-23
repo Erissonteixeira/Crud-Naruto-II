@@ -9,5 +9,5 @@ public class PersonagemResponseDTO {
     private String nome;
     private int vida;
     private int chakra;
-    private List<JutsuResponse> jutsus;
+    private List<JutsuResponseDTO> jutsus;
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class JutsuRequest {
+public class JutsuRequestDTO {
     @NotBlank(message = "O nome do jutsu não pode estar vazio")
     private String nome;
     @Min(value = 1, message = "O dano deve ser maior que 0")
