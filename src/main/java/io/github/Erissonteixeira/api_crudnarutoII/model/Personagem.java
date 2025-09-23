@@ -3,8 +3,8 @@ package io.github.Erissonteixeira.api_crudnarutoII.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,8 +19,13 @@ public class Personagem {
     private int vida = 100;
     @Column(nullable = false)
     private int chakra = 100;
-    @Transient
-    private Map<String, Jutsu> jutsus = new HashMap<>();
+    @ManyToMany
+    @JoinTable(
+            name = "personagem_jutsu",
+            joinColumns = @JoinColumn(name = "personagem_id"),
+            inverseJoinColumns = @JoinColumn(name = "jutsu_id")
+    )
+    private List<Jutsu> jutsus = new ArrayList<>();
 
     public Personagem(){
     }
@@ -31,8 +36,6 @@ public class Personagem {
         this.chakra = chakra;
     }
     public void adicionarJutsu(Jutsu jutsu){
-        this.jutsus.put(jutsu.getNome(), jutsu);
+        this.jutsus.add(jutsu);
     }
-
-
 }
