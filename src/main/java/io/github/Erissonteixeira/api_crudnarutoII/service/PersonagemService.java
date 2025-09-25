@@ -2,8 +2,10 @@ package io.github.Erissonteixeira.api_crudnarutoII.service;
 
 import io.github.Erissonteixeira.api_crudnarutoII.dto.PersonagemRequestDTO;
 import io.github.Erissonteixeira.api_crudnarutoII.dto.PersonagemResponseDTO;
+import io.github.Erissonteixeira.api_crudnarutoII.exception.InvalidActionException;
 import io.github.Erissonteixeira.api_crudnarutoII.exception.ResourceNotFoundException;
 import io.github.Erissonteixeira.api_crudnarutoII.mapper.PersonagemMapper;
+import io.github.Erissonteixeira.api_crudnarutoII.model.Jutsu;
 import io.github.Erissonteixeira.api_crudnarutoII.model.Personagem;
 import io.github.Erissonteixeira.api_crudnarutoII.repository.JutsuRepository;
 import io.github.Erissonteixeira.api_crudnarutoII.repository.PersonagemRepository;
@@ -48,6 +50,18 @@ public class PersonagemService {
         Personagem personagem = personagemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
         personagemRepository.delete(personagem);
+    }
+    public PersonagemResponseDTO adicionarJutsu(Long personagemId, Long jutsuId){
+        Personagem personagem = personagemRepository.findById(personagemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + personagemId));
+        Jutsu jutsu = jutsuRepository.findById(jutsuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Jutsu não encontrado com ID: " + jutsuId));
+        if(personagem.getChakra() < 10){
+            throw new InvalidActionException("Chakra insuficiente para aprender este Jutsu!");
+        }
+        personagem.getJutsus().add(jutsu);
+        Personagem atualizado = personagemRepository.save(personagem);
+        return personagemMapper.toResponseDTO(atualizado);
     }
 
 }
