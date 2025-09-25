@@ -16,32 +16,44 @@ import java.util.List;
 @RequestMapping("/personagens")
 @RequiredArgsConstructor
 @Tag(name = "Personagem", description = "Endpoints para gerenciamento de personagens")
-public class PersonagemController{
+public class PersonagemController {
+
     private final PersonagemService personagemService;
 
     @PostMapping
     @Operation(summary = "Cria um novo personagem")
-    public ResponseEntity<PersonagemResponseDTO> criar(@RequestBody PersonagemRequestDTO dto){
+    public ResponseEntity<PersonagemResponseDTO> criar(@RequestBody PersonagemRequestDTO dto) {
         PersonagemResponseDTO criado = personagemService.criar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
+
     @GetMapping
     @Operation(summary = "Lista todos os personagens")
-    public ResponseEntity<List<PersonagemResponseDTO>> listarTodos(){
+    public ResponseEntity<List<PersonagemResponseDTO>> listarTodos() {
         List<PersonagemResponseDTO> personagens = personagemService.listarTodos();
         return ResponseEntity.ok(personagens);
     }
+
     @GetMapping("/{id}")
-    @Operation(summary = "Busca um personagem pelo id")
-    public ResponseEntity<PersonagemResponseDTO> buscarPorId(@PathVariable Long id){
+    @Operation(summary = "Busca um personagem pelo ID")
+    public ResponseEntity<PersonagemResponseDTO> buscarPorId(@PathVariable Long id) {
         PersonagemResponseDTO personagem = personagemService.buscarPorId(id);
         return ResponseEntity.ok(personagem);
     }
+
     @PutMapping("/{id}")
+    @Operation(summary = "Atualiza um personagem existente")
+    public ResponseEntity<PersonagemResponseDTO> atualizar(@PathVariable Long id,
+                                                           @RequestBody PersonagemRequestDTO dto) {
+        PersonagemResponseDTO atualizado = personagemService.atualizar(id, dto);
+        return ResponseEntity.ok(atualizado);
+    }
+
+    @DeleteMapping("/{id}")
     @Operation(summary = "Deleta um personagem pelo ID")
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         personagemService.deletar(id);
         return ResponseEntity.noContent().build();
     }
+    }
 
-}
