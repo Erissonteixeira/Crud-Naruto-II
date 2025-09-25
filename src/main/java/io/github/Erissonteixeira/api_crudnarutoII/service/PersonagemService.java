@@ -44,4 +44,10 @@ public class PersonagemService {
         Personagem atualizado = personagemRepository.save(personagem);
         return personagemMapper.toResponseDTO(atualizado);
     }
+    public void deletar(Long id){
+        Personagem personagem = personagemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
+        personagemRepository.delete(personagem);
+    }
+
 }
