@@ -55,5 +55,12 @@ public class PersonagemController {
         personagemService.deletar(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/{personagemId}/jutsus/{jutsuId}")
+    @Operation(summary = "Adiciona um jutsu ao personagem")
+    public ResponseEntity<PersonagemResponseDTO> adicionarJutsu(@PathVariable Long personagemId,
+                                                                @PathVariable Long jutsuId) {
+        PersonagemResponseDTO atualizado = personagemService.adicionarJutsu(personagemId, jutsuId);
+        return ResponseEntity.ok(atualizado);
+    }
     }
 
