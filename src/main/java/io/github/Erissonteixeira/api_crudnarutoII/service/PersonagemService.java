@@ -35,4 +35,13 @@ public class PersonagemService {
                 .orElseThrow(()-> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
         return personagemMapper.toResponseDTO(personagem);
     }
+    public PersonagemResponseDTO atualizar(Long id, PersonagemRequestDTO dto){
+        Personagem personagem = personagemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
+        personagem.setNome(dto.getNome());
+        personagem.setChakra(dto.getChakra());
+        personagem.setVida(dto.getVida());
+        Personagem atualizado = personagemRepository.save(personagem);
+        return personagemMapper.toResponseDTO(atualizado);
+    }
 }
