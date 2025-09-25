@@ -37,4 +37,11 @@ public class JutsuController{
         JutsuResponseDTO jutsu = jutsuService.buscarPorId(id);
         return ResponseEntity.ok(jutsu);
     }
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualiza um jutsu existente")
+    public ResponseEntity<JutsuResponseDTO> atualizar(@PathVariable Long id,
+                                                      @RequestBody JutsuRequestDTO dto) {
+        JutsuResponseDTO atualizado = jutsuService.atualizar(id, dto);
+        return ResponseEntity.ok(atualizado);
+    }
 }
