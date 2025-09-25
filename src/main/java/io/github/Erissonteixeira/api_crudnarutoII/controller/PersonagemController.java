@@ -31,4 +31,11 @@ public class PersonagemController{
         List<PersonagemResponseDTO> personagens = personagemService.listarTodos();
         return ResponseEntity.ok(personagens);
     }
+    @GetMapping("/{id}")
+    @Operation(summary = "Busca um personagem pelo id")
+    public ResponseEntity<PersonagemResponseDTO> buscarPorId(@PathVariable Long id){
+        PersonagemResponseDTO personagem = personagemService.buscarPorId(id);
+        return ResponseEntity.ok(personagem);
+    }
+
 }
