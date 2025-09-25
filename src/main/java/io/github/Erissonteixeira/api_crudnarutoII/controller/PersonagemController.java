@@ -55,6 +55,7 @@ public class PersonagemController {
         personagemService.deletar(id);
         return ResponseEntity.noContent().build();
     }
+
     @PostMapping("/{personagemId}/jutsus/{jutsuId}")
     @Operation(summary = "Adiciona um jutsu ao personagem")
     public ResponseEntity<PersonagemResponseDTO> adicionarJutsu(@PathVariable Long personagemId,
@@ -62,5 +63,12 @@ public class PersonagemController {
         PersonagemResponseDTO atualizado = personagemService.adicionarJutsu(personagemId, jutsuId);
         return ResponseEntity.ok(atualizado);
     }
-    }
 
+    @DeleteMapping("/{personagemId}/jutsus/{nomeJutsu}")
+    @Operation(summary = "Remove um jutsu do personagem pelo nome")
+    public ResponseEntity<PersonagemResponseDTO> removerJutsu(@PathVariable Long personagemId,
+                                                              @PathVariable String nomeJutsu) {
+        PersonagemResponseDTO atualizado = personagemService.removerJutsu(personagemId, nomeJutsu);
+        return ResponseEntity.ok(atualizado);
+    }
+}
