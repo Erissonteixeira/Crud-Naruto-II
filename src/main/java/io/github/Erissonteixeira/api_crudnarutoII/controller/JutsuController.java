@@ -31,4 +31,10 @@ public class JutsuController{
         List<JutsuResponseDTO> jutsus = jutsuService.listarTodos();
         return ResponseEntity.ok(jutsus);
     }
+    @GetMapping("/{id}")
+    @Operation(summary = "Busca um jutsu pelo ID")
+    public ResponseEntity<JutsuResponseDTO> buscarPorId(@PathVariable Long id) {
+        JutsuResponseDTO jutsu = jutsuService.buscarPorId(id);
+        return ResponseEntity.ok(jutsu);
+    }
 }
