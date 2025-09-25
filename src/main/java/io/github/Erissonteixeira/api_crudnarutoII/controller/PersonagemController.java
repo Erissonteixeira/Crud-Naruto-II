@@ -37,5 +37,11 @@ public class PersonagemController{
         PersonagemResponseDTO personagem = personagemService.buscarPorId(id);
         return ResponseEntity.ok(personagem);
     }
+    @PutMapping("/{id}")
+    @Operation(summary = "Deleta um personagem pelo ID")
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        personagemService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
