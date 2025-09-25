@@ -9,6 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {JutsuMapper.class})
 public interface PersonagemMapper{
     @Mapping(target = "jutsus", source = "jutsus")
-    Personagem toEntity(PersonagemRequestDTO dto, java.util.List<io.github.Erissonteixeira.api_crudnarutoII.model.Jutsu> jutsus);
-    PersonagemResponseDTO toDTO(Personagem personagem);
+    Personagem toEntity(PersonagemRequestDTO dto);
+    PersonagemResponseDTO toResponseDTO(Personagem personagem);
 }
