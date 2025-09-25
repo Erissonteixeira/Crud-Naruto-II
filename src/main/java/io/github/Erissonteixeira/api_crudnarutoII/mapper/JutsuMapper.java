@@ -8,5 +8,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface JutsuMapper {
     Jutsu toEntity(JutsuRequestDTO dto);
-    JutsuResponseDTO toDTO(Jutsu jutsu);
+    JutsuResponseDTO toResponseDTO(Jutsu jutsu);
 }
