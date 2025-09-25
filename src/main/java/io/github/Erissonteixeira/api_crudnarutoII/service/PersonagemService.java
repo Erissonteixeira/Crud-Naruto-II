@@ -9,6 +9,8 @@ import io.github.Erissonteixeira.api_crudnarutoII.repository.PersonagemRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PersonagemService {
@@ -20,5 +22,11 @@ public class PersonagemService {
         Personagem personagem = personagemMapper.toEntity(dto);
         Personagem salvo = personagemRepository.save(personagem);
         return personagemMapper.toResponseDTO(salvo);
+    }
+    public List<PersonagemResponseDTO> listarTodos(){
+        return personagemRepository.findAll()
+                .stream()
+                .map(personagemMapper::toResponseDTO)
+                .toList();
     }
 }
