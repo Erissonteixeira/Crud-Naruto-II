@@ -17,51 +17,87 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PersonagemService {
+
     private final PersonagemRepository personagemRepository;
     private final JutsuRepository jutsuRepository;
     private final PersonagemMapper personagemMapper;
 
-    public PersonagemResponseDTO criar(PersonagemRequestDTO dto){
+    public PersonagemResponseDTO criar(PersonagemRequestDTO dto) {
         Personagem personagem = personagemMapper.toEntity(dto);
+
+        if (dto.getJutsusIds() != null) {
+            for (Long jutsuId : dto.getJutsusIds()) {
+                Jutsu jutsu = jutsuRepository.findById(jutsuId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Jutsu não encontrado com ID: " + jutsuId));
+                personagem.adicionarJutsu(jutsu);
+            }
+        }
         Personagem salvo = personagemRepository.save(personagem);
         return personagemMapper.toResponseDTO(salvo);
     }
-    public List<PersonagemResponseDTO> listarTodos(){
+
+    public List<PersonagemResponseDTO> listarTodos() {
         return personagemRepository.findAll()
                 .stream()
                 .map(personagemMapper::toResponseDTO)
                 .toList();
     }
-    public PersonagemResponseDTO buscarPorId(Long id){
+
+    public PersonagemResponseDTO buscarPorId(Long id) {
         Personagem personagem = personagemRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
         return personagemMapper.toResponseDTO(personagem);
     }
-    public PersonagemResponseDTO atualizar(Long id, PersonagemRequestDTO dto){
+
+    public PersonagemResponseDTO atualizar(Long id, PersonagemRequestDTO dto) {
         Personagem personagem = personagemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
+
         personagem.setNome(dto.getNome());
-        personagem.setChakra(dto.getChakra());
         personagem.setVida(dto.getVida());
-        Personagem atualizado = personagemRepository.save(personagem);
-        return personagemMapper.toResponseDTO(atualizado);
-    }
-    public void deletar(Long id){
-        Personagem personagem = personagemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
-        personagemRepository.delete(personagem);
-    }
-    public PersonagemResponseDTO adicionarJutsu(Long personagemId, Long jutsuId){
-        Personagem personagem = personagemRepository.findById(personagemId)
-                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + personagemId));
-        Jutsu jutsu = jutsuRepository.findById(jutsuId)
-                .orElseThrow(() -> new ResourceNotFoundException("Jutsu não encontrado com ID: " + jutsuId));
-        if(personagem.getChakra() < 10){
-            throw new InvalidActionException("Chakra insuficiente para aprender este Jutsu!");
+        personagem.setChakra(dto.getChakra());
+
+        if(dto.getJutsusIds() != null) {
+            personagem.getJutsus().clear();
+            personagem.getJutsusMap().clear();
+            for (Long jutsuId : dto.getJutsusIds()) {
+                Jutsu jutsu = jutsuRepository.findById(jutsuId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Jutsu não encontrado com ID: " + jutsuId));
+                personagem.adicionarJutsu(jutsu);
+            }
         }
-        personagem.getJutsus().add(jutsu);
+
         Personagem atualizado = personagemRepository.save(personagem);
         return personagemMapper.toResponseDTO(atualizado);
     }
 
+    public void deletar(Long id) {
+        Personagem personagem = personagemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
+        personagemRepository.delete(personagem);
+    }
+
+    public PersonagemResponseDTO adicionarJutsu(Long personagemId, Long jutsuId) {
+        Personagem personagem = personagemRepository.findById(personagemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + personagemId));
+        Jutsu jutsu = jutsuRepository.findById(jutsuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Jutsu não encontrado com ID: " + jutsuId));
+
+        if (personagem.getChakra() < 10) {
+            throw new InvalidActionException("Chakra insuficiente para aprender este Jutsu!");
+        }
+
+        personagem.adicionarJutsu(jutsu);
+        Personagem atualizado = personagemRepository.save(personagem);
+        return personagemMapper.toResponseDTO(atualizado);
+    }
+
+    public PersonagemResponseDTO removerJutsu(Long personagemId, String nomeJutsu) {
+        Personagem personagem = personagemRepository.findById(personagemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado com ID: " + personagemId));
+
+        personagem.removerJutsu(nomeJutsu);
+        Personagem atualizado = personagemRepository.save(personagem);
+        return personagemMapper.toResponseDTO(atualizado);
+    }
 }
