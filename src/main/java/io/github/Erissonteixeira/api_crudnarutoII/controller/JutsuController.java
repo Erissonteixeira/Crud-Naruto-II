@@ -44,4 +44,10 @@ public class JutsuController{
         JutsuResponseDTO atualizado = jutsuService.atualizar(id, dto);
         return ResponseEntity.ok(atualizado);
     }
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deleta um jutsu pelo ID")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        jutsuService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }
