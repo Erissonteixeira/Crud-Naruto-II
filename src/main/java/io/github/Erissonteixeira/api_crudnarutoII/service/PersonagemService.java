@@ -2,6 +2,7 @@ package io.github.Erissonteixeira.api_crudnarutoII.service;
 
 import io.github.Erissonteixeira.api_crudnarutoII.dto.PersonagemRequestDTO;
 import io.github.Erissonteixeira.api_crudnarutoII.dto.PersonagemResponseDTO;
+import io.github.Erissonteixeira.api_crudnarutoII.exception.ResourceNotFoundException;
 import io.github.Erissonteixeira.api_crudnarutoII.mapper.PersonagemMapper;
 import io.github.Erissonteixeira.api_crudnarutoII.model.Personagem;
 import io.github.Erissonteixeira.api_crudnarutoII.repository.JutsuRepository;
@@ -28,5 +29,10 @@ public class PersonagemService {
                 .stream()
                 .map(personagemMapper::toResponseDTO)
                 .toList();
+    }
+    public PersonagemResponseDTO buscarPorId(Long id){
+        Personagem personagem = personagemRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Personagem não encontrado com ID: " + id));
+        return personagemMapper.toResponseDTO(personagem);
     }
 }
