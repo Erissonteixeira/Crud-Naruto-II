@@ -31,25 +31,26 @@ public class Personagem {
     @Transient
     private Map<String, Jutsu> jutsusMap = new HashMap<>();
 
-    public Personagem(){
+    public Personagem() {
     }
 
-    public Personagem(String nome, int vida, int chakra){
+    public Personagem(String nome, int vida, int chakra) {
         this.nome = nome;
         this.vida = vida;
         this.chakra = chakra;
     }
-    public void adicionarJutsu(Jutsu jutsu){
-        if(jutsusMap.containsKey(jutsu.getNome())){
+
+    public void adicionarJutsu(Jutsu jutsu) {
+        if (jutsusMap.containsKey(jutsu.getNome())) {
             throw new IllegalArgumentException("Jutsu já adicionado ao personagem!");
         }
         this.jutsus.add(jutsu);
         this.jutsusMap.put(jutsu.getNome(), jutsu);
     }
 
-    public void removerJutsu(String nomeJutsu){
+    public void removerJutsu(String nomeJutsu) {
         Jutsu jutsu = jutsusMap.get(nomeJutsu);
-        if(jutsu == null){
+        if (jutsu == null) {
             throw new IllegalArgumentException("Este personagem não possui o Jutsu informado!");
         }
         this.jutsus.remove(jutsu);
@@ -57,11 +58,14 @@ public class Personagem {
     }
 
     @PostLoad
-    public void carregarMap(){
+    public void carregarMap() {
         jutsusMap.clear();
-        for(Jutsu j : jutsus){
+        for (Jutsu j : jutsus) {
             jutsusMap.put(j.getNome(), j);
         }
     }
-}
 
+    public boolean isDerrotado() {
+        return this.vida <= 0;
+    }
+}
