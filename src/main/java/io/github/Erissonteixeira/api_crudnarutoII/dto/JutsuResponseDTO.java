@@ -13,4 +13,6 @@ public class JutsuResponseDTO {
     private int dano;
     @Schema(description = "Consumo de chakra do jutsu", example = "50")
     private int consumoChakra;
+    @Schema(description = "Chakra necessário do jutsu", example = "50")
+    private int chakraNecessario;
 }
