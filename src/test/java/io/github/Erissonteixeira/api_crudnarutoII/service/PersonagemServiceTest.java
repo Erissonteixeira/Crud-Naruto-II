@@ -37,6 +37,7 @@ class PersonagemServiceTest {
 
     private Personagem personagem;
     private Jutsu jutsu;
+    private PersonagemRequestDTO dto;
 
     @BeforeEach
     void setUp() {
@@ -51,15 +52,15 @@ class PersonagemServiceTest {
         jutsu = new Jutsu();
         jutsu.setId(1L);
         jutsu.setNome("Rasengan");
+
+        dto = new PersonagemRequestDTO();
+        dto.setNome("Naruto");
+        dto.setVida(100);
+        dto.setChakra(200);
     }
 
     @Test
     void deveCriarPersonagemComSucesso() {
-        PersonagemRequestDTO dto = new PersonagemRequestDTO();
-        dto.setNome("Naruto");
-        dto.setVida(100);
-        dto.setChakra(200);
-
         when(personagemMapper.toEntity(dto)).thenReturn(personagem);
         when(personagemRepository.save(any(Personagem.class))).thenReturn(personagem);
         when(personagemMapper.toResponseDTO(any(Personagem.class))).thenReturn(new PersonagemResponseDTO());
@@ -84,8 +85,42 @@ class PersonagemServiceTest {
     @Test
     void deveLancarExcecaoQuandoPersonagemNaoEncontrado() {
         when(personagemRepository.findById(99L)).thenReturn(Optional.empty());
-
         assertThrows(ResourceNotFoundException.class, () -> personagemService.buscarPorId(99L));
+    }
+
+    @Test
+    void deveAtualizarPersonagemComSucesso() {
+        when(personagemRepository.findById(1L)).thenReturn(Optional.of(personagem));
+        when(jutsuRepository.findById(1L)).thenReturn(Optional.of(jutsu));
+        when(personagemRepository.save(personagem)).thenReturn(personagem);
+        when(personagemMapper.toResponseDTO(personagem)).thenReturn(new PersonagemResponseDTO());
+
+        dto.setJutsusIds(List.of(1L));
+        PersonagemResponseDTO response = personagemService.atualizar(1L, dto);
+
+        assertNotNull(response);
+        assertTrue(personagem.getJutsus().contains(jutsu));
+    }
+
+    @Test
+    void deveLancarExcecaoAoAtualizarPersonagemNaoExistente() {
+        when(personagemRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> personagemService.atualizar(99L, dto));
+    }
+
+    @Test
+    void deveDeletarPersonagemComSucesso() {
+        when(personagemRepository.findById(1L)).thenReturn(Optional.of(personagem));
+        doNothing().when(personagemRepository).delete(personagem);
+
+        assertDoesNotThrow(() -> personagemService.deletar(1L));
+        verify(personagemRepository, times(1)).delete(personagem);
+    }
+
+    @Test
+    void deveLancarExcecaoAoDeletarPersonagemNaoExistente() {
+        when(personagemRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(ResourceNotFoundException.class, () -> personagemService.deletar(99L));
     }
 
     @Test
@@ -103,7 +138,7 @@ class PersonagemServiceTest {
 
     @Test
     void deveLancarExcecaoQuandoChakraInsuficiente() {
-        personagem.setChakra(5); // chakra insuficiente
+        personagem.setChakra(5);
         when(personagemRepository.findById(1L)).thenReturn(Optional.of(personagem));
         when(jutsuRepository.findById(1L)).thenReturn(Optional.of(jutsu));
 
@@ -117,7 +152,7 @@ class PersonagemServiceTest {
         when(personagemRepository.save(personagem)).thenReturn(personagem);
         when(personagemMapper.toResponseDTO(any(Personagem.class))).thenReturn(new PersonagemResponseDTO());
 
-        PersonagemResponseDTO response = personagemService.removerJutsu(1L, "Rasengan"); // CORRETO → String
+        PersonagemResponseDTO response = personagemService.removerJutsu(1L, "Rasengan");
 
         assertNotNull(response);
         assertFalse(personagem.getJutsus().contains(jutsu));
