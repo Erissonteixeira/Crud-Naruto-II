@@ -9,24 +9,33 @@ import java.util.List;
 @Data
 @Table(name = "jutsus")
 public class Jutsu {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String nome;
+
     @Column(nullable = false)
     private int dano;
+
     @Column(nullable = false)
     private int consumoChakra;
+
+    @Column(nullable = false)
+    private int chakraNecessario;
+
     @ManyToMany(mappedBy = "jutsus")
     private List<Personagem> personagens = new ArrayList<>();
 
-    public Jutsu(){
+    public Jutsu() {
     }
 
-    public Jutsu(String nome, int dano, int consumoChakra){
+    public Jutsu(String nome, int dano, int consumoChakra, int chakraNecessario) {
         this.nome = nome;
         this.dano = dano;
         this.consumoChakra = consumoChakra;
+        this.chakraNecessario = chakraNecessario;
     }
 }
